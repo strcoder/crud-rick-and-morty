@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
+import CharacterCard from '../../components/CharacterCard';
 import { getCharacters } from '../../redux/actions';
+import './styles.scss';
 
 const Home = ({ characters, getCharacters }) => {
 
@@ -10,12 +12,11 @@ const Home = ({ characters, getCharacters }) => {
   }, []);
 
   return (
-    <section>
-      <h1>Home</h1>
+    <section className='Home'>
       {characters?.map((item) => (
-        <div key={item.id}>
-          <p>{item.name}</p>
-        </div>
+        <React.Fragment key={item.id}>
+          <CharacterCard data={item} />
+        </React.Fragment>
       ))}
     </section>
   );

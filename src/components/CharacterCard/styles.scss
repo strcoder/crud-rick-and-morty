@@ -1,0 +1,38 @@
+@import '../../sass/utils/variables';
+
+.CharacterCard {
+  padding: 0;
+  display: grid;
+  text-align: left;
+  align-items: initial;
+  align-content: initial;
+  background-color: $white;
+  justify-content: initial;
+  box-shadow: $box-shadow-sm;
+  border-radius: $border-radius;
+  border: $border-width solid $border-color;
+}
+
+.CharacterCard__avatar {
+  width: 100%;
+  grid-row-start: 1;
+  grid-column-start: 1;
+  border-radius: $border-radius;
+}
+
+.CharacterCard__body {
+  gap: 4px;
+  padding: 10px;
+  grid-row-start: 1;
+  color: $soft-color;
+  grid-column-start: 1;
+  align-content: flex-end;
+  border-radius: $border-radius;
+  background: linear-gradient(to bottom, #00000000, #0f0f0f28, #000000);
+  & p:first-child {
+    font-size: $font-size-xl;
+  }
+  & a {
+    justify-self: flex-end;
+  }
+}
