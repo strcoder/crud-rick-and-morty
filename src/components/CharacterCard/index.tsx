@@ -6,7 +6,7 @@ const CharacterCard = ({ data }) => {
   if (!data) {
     return null;
   }
-  const { id, name, status, species, type, gender, image } = data;
+  const { id, name, status, species, image } = data;
   return (
     <Link to={`/character/${id}`} className='CharacterCard'>
       <figure className='CharacterCard__avatar'>

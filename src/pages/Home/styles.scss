@@ -1,17 +1,28 @@
+@import '../../sass/utils/variables';
+
 .Home {
   gap: 50px;
   padding: 25px;
+  & button {
+    font-size: $font-size-lg;
+  }
+}
+
+.CharactersList {
+  gap: 50px;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 @media screen and (min-width: 768px) {
   .Home {
     padding: 25px 10%;
+    padding-bottom: 100px;
   }
 }
 
 @media screen and (min-width: 1024px) {
   .Home {
     padding: 50px 10%;
+    padding-bottom: 100px;
   }
 }
