@@ -61,3 +61,9 @@ export const getNextPage = ({ characters, nextPage }) => {
     });
   }
 }
+
+export const updateCharacter = ({ character }) => {
+  return (dispatch) => {
+    dispatch(setCharacter(character));
+  }
+}
