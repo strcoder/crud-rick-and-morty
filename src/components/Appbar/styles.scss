@@ -1,0 +1,12 @@
+@import '../../sass/utils/variables';
+
+.Appbar {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  background-color: $white;
+  border: $border-width solid $border-color;
+  & > a:first-child {
+    padding: 0;
+  }
+}

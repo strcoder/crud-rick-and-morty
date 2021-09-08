@@ -1,5 +1,10 @@
-const reducer = (state: any, payload: any) => {
+const reducer = (state, payload) => {
   switch (payload.type) {
+    case 'SET_CHARACTERS':
+      return {
+        ...state,
+        characters: payload.characters,
+      };
     case 'SET_ERROR': return state;
     default: return state;
   }
