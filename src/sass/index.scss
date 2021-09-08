@@ -1,15 +1,13 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-}
+@import './utils/variables';
 
-html {
-  scroll-behavior: smooth;
-}
+@import './mixins/background';
+@import './mixins/shadow';
+@import './mixins/scroll';
+@import './mixins/button';
+@import './mixins/form';
 
-body {
-  background: #f1f1f1;
-  font-family: 'Nunito Sans', sans-serif;
-}
+@import './utils/global';
+@import '../sass/utils/button';
+@import '../sass/utils/display';
+@import '../sass/utils/text';
+@import '../sass/utils/form';
