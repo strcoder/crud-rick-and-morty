@@ -1,9 +1,10 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 const Home = () => {
   return (
     <section>
-      Home
+      <h1>Home</h1>
     </section>
   );
 }
