@@ -10,6 +10,11 @@ export const setCharacters = (characters) => ({
   characters,
 });
 
+export const setCharacter = (character) => ({
+  type: 'SET_CHARACTER',
+  character,
+});
+
 export const setNextPage = (nextPage) => ({
   type: 'SET_NEXT_PAGE',
   nextPage,
@@ -23,6 +28,19 @@ export const getCharacters = () => {
     }).then(({ data }) => {
       dispatch(setNextPage(data.info.next));
       dispatch(setCharacters(data.results));
+    }).catch((error) => {
+      dispatch(setError(error));
+    });
+  }
+}
+
+export const getCharacter = ({ id }) => {
+  return (dispatch) => {
+    axios({
+      method: 'GET',
+      url: `https://rickandmortyapi.com/api/character/${id}`,
+    }).then(({ data }) => {
+      dispatch(setCharacter(data));
     }).catch((error) => {
       dispatch(setError(error));
     });

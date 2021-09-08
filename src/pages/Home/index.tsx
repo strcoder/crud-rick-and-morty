@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import CharacterCard from '../../components/CharacterCard';
@@ -6,7 +6,6 @@ import { getCharacters, getNextPage } from '../../redux/actions';
 import './styles.scss';
 
 const Home = ({ characters, nextPage, getCharacters, getNextPage }) => {
-  const homeRef = useRef();
   const [list, setList] = useState(characters);
 
   useEffect(() => {

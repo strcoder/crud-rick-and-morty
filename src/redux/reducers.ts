@@ -5,6 +5,11 @@ const reducer = (state, payload) => {
         ...state,
         characters: payload.characters,
       };
+    case 'SET_CHARACTER':
+      return {
+        ...state,
+        character: payload.character,
+      };
     case 'SET_NEXT_PAGE':
       return {
         ...state,

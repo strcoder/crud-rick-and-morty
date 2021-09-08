@@ -1,0 +1,64 @@
+@import '../../sass/utils/variables';
+
+.Character {
+  padding: 25px;
+}
+
+.Character__return {
+  top: 50px;
+  left: 50px;
+  display: none;
+  position: absolute;
+}
+
+.Character__image {
+  max-height: 400px;
+  border-radius: $border-radius;
+  & img {
+    object-fit: cover;
+    border-radius: $border-radius;
+  }
+}
+
+.Character__body {
+  gap: 12px;
+  align-content: flex-start;
+  padding: 20px;
+  & p strong {
+    font-size: $font-size-xl;
+  }
+  & p {
+    font-size: $font-size-lg;
+  }
+  & > .flex {
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    & a, button {
+      font-size: $font-size-lg;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .Character {
+    gap: 25px;
+    padding: 25px 10%;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .Character {
+    padding: 50px 10%;
+  }
+
+  .Character__image {
+    max-height: initial;
+  }
+
+  .Character__return {
+    display: flex;
+  }
+}
