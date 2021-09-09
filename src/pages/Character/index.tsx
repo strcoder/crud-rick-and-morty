@@ -8,27 +8,66 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import { IoReturnUpBack } from 'react-icons/io5';
 import { useParams, useLocation } from 'react-router-dom';
 import TextField from '../../components/form/TextField';
-import { getCharacter, updateCharacter } from '../../redux/actions';
+import { getCharacter, updateCharacter, updateCharacters } from '../../redux/actions';
 import './styles.scss';
 
 
-const Character = ({ character, getCharacter, updateCharacter }) => {
-  const params = useParams<{ id: string }>();
+const Character = ({ characters, character, getCharacter, updateCharacter, updateCharacters }) => {
   const { pathname } = useLocation();
-  const { register, handleSubmit } = useForm();
+  const [saved, setSaved] = useState(false);
   const isEdit = pathname.includes('/edit');
+  const params = useParams<{ id: string }>();
+  const { register, handleSubmit } = useForm();
+  const [person, setPerson] = useState(character);
 
   useEffect(() => {
-    getCharacter({ id: params.id });
+    if (characters) {
+      const aux = characters?.find((item) => item.id.toString() === params.id);
+      if (aux) {
+        setPerson(aux);
+        updateCharacter({ character: aux });
+      } else {
+        getCharacter({ id: params.id });
+      }
+    } else {
+      getCharacter({ id: params.id });
+    }
   }, []);
 
+  useEffect(() => {
+    setPerson(character);
+  }, [character]);
+
   const onSubmit = (data) => {
+    const origin = {
+      name: data.origin,
+      url: character.origin.url,
+    }
+    const location = {
+      name: data.location,
+      url: character.location.url,
+    }
     const newCharacter = {
       ...character,
       ...data,
+      origin,
+      location,
     };
+    if (characters) {
+      const newCharacters = characters?.map((item) => {
+        if (item.id === newCharacter.id) {
+          return newCharacter;
+        }
+        return item;
+      })
+      updateCharacters({ characters: newCharacters });
+    }
 
     updateCharacter({ character: newCharacter });
+    setSaved(true);
+    setTimeout(() => {
+      setSaved(false);
+    }, 2000);
   }
 
   return (
@@ -37,14 +76,14 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
         <span className='btn-icon'><IoReturnUpBack /></span>
         <span>Regresar</span>
       </Link>
-      {character && !isEdit && (
+      {person && !isEdit && (
         <>
           <figure className='Character__image'>
-            <img src={character.image} alt={character.name} />
+            <img src={person.image} alt={person.name} />
           </figure>
           <div className='Character__body'>
             <div className='flex'>
-              <p><strong>{character.name}</strong></p>
+              <p><strong>{person.name}</strong></p>
               <div className='flex'>
                 <button
                   type='button'
@@ -57,26 +96,26 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
                 <Link
                   title='Editar'
                   className='btn-primary'
-                  to={`/character/edit/${character.id}`}
+                  to={`/character/edit/${person.id}`}
                 >
                   <AiOutlineEdit />
                 </Link>
               </div>
             </div>
-            <p className={character.status}>
-              {`${character.status} - ${character.species}`}
+            <p className={person.status}>
+              {`${person.status} - ${person.species}`}
             </p>
-            <p>{character.type}</p>
-            <p>{character.gender}</p>
-            <p>{character.origin.name}</p>
-            <p>{character.location.name}</p>
+            <p>{person.type}</p>
+            <p>{person.gender}</p>
+            <p>{person.origin.name}</p>
+            <p>{person.location.name}</p>
           </div>
         </>
       )}
-      {character && isEdit && (
+      {person && isEdit && (
         <>
           <figure className='Character__image'>
-            <img src={character.image} alt={character.name} />
+            <img src={person.image} alt={person.name} />
           </figure>
           <form className='Character__body' onSubmit={handleSubmit(onSubmit)}>
             <div className='flex'>
@@ -85,7 +124,7 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
                 name='name'
                 label='Nombre'
                 autoComplete='off'
-                defaultValue={character.name}
+                defaultValue={person.name}
                 placeholder='Digita el nombre'
                 register={register('name', { required: true })}
               />
@@ -93,7 +132,7 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
                 <Link
                   title='Cancelar'
                   className='btn-outline-danger'
-                  to={`/character/${character.id}`}
+                  to={`/character/${person.id}`}
                 >
                   <TiTimes />
                 </Link>
@@ -104,7 +143,7 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
               name='status'
               label='Status'
               autoComplete='off'
-              defaultValue={character.status}
+              defaultValue={person.status}
               placeholder='Digita el status del personaje'
               register={register('status', { required: true })}
             />
@@ -113,7 +152,7 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
               name='species'
               label='Especie'
               autoComplete='off'
-              defaultValue={character.species}
+              defaultValue={person.species}
               placeholder='Digita la especie del personaje'
               register={register('species', { required: true })}
             />
@@ -122,7 +161,7 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
               name='gender'
               label='Genero'
               autoComplete='off'
-              defaultValue={character.gender}
+              defaultValue={person.gender}
               placeholder='Digita el genero del personaje'
               register={register('gender', { required: true })}
             />
@@ -131,7 +170,7 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
               name='origin'
               label='Origen'
               autoComplete='off'
-              defaultValue={character.origin.name}
+              defaultValue={person.origin.name}
               placeholder='Digita el origen del personaje'
               register={register('origin', { required: true })}
             />
@@ -140,17 +179,18 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
               name='location'
               autoComplete='off'
               label='Localización'
-              defaultValue={character.location.name}
+              defaultValue={person.location.name}
               placeholder='Digita la localización del personaje'
               register={register('location', { required: true })}
             />
+            {saved && <p className='color-success bounceIn'>¡Guardado correctamente!</p>}
             <button type='submit' className='btn-primary form-button'>
               Guardar
             </button>
           </form>
         </>
       )}
-      {!character && (
+      {!person && (
         <p>Loading...</p>
       )}
     </section>
@@ -167,6 +207,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   getCharacter,
   updateCharacter,
+  updateCharacters,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Character);

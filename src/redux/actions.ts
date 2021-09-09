@@ -62,6 +62,12 @@ export const getNextPage = ({ characters, nextPage }) => {
   }
 }
 
+export const updateCharacters = ({ characters }) => {
+  return (dispatch) => {
+    dispatch(setCharacters(characters));
+  }
+}
+
 export const updateCharacter = ({ character }) => {
   return (dispatch) => {
     dispatch(setCharacter(character));
