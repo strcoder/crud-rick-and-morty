@@ -10,6 +10,11 @@ export const setCharacters = (characters) => ({
   characters,
 });
 
+export const setDeletedCharacter = (character) => ({
+  type: 'SET_DELETED_CHARACTER',
+  character,
+});
+
 export const setCharacter = (character) => ({
   type: 'SET_CHARACTER',
   character,
@@ -71,5 +76,11 @@ export const updateCharacters = ({ characters }) => {
 export const updateCharacter = ({ character }) => {
   return (dispatch) => {
     dispatch(setCharacter(character));
+  }
+}
+
+export const deletedCharacter = ({ character }) => {
+  return (dispatch) => {
+    dispatch(setDeletedCharacter(character));
   }
 }

@@ -2,10 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import CharacterCard from '../../components/CharacterCard';
-import { getCharacters, getNextPage } from '../../redux/actions';
+import {
+  getCharacters,
+  getNextPage,
+  updateCharacters,
+  setDeletedCharacter,
+} from '../../redux/actions';
 import './styles.scss';
 
-const Home = ({ characters, character, nextPage, getCharacters, getNextPage }) => {
+const Home = ({
+  deleted,
+  nextPage,
+  character,
+  characters,
+  getNextPage,
+  getCharacters,
+  updateCharacters,
+  setDeletedCharacter,
+}) => {
   const [list, setList] = useState(characters);
 
   useEffect(() => {
@@ -16,6 +30,12 @@ const Home = ({ characters, character, nextPage, getCharacters, getNextPage }) =
 
   useEffect(() => {
     setList(characters);
+    if (characters && deleted) {
+      const newList = characters.filter((item) => item.id !== deleted.id);
+      updateCharacters({ characters: newList });
+      setDeletedCharacter(null);
+      setList(newList);
+    }
   }, [characters]);
 
   useEffect(() => {
@@ -50,10 +70,11 @@ const Home = ({ characters, character, nextPage, getCharacters, getNextPage }) =
       </section>
     </>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   return {
+    deleted: state.deleted,
     nextPage: state.nextPage,
     character: state.character,
     characters: state.characters,
@@ -61,8 +82,10 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  getCharacters,
   getNextPage,
+  getCharacters,
+  updateCharacters,
+  setDeletedCharacter,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -41,6 +41,13 @@
   }
 }
 
+.DeleteModal {
+  max-width: 250px;
+  & .flex {
+    padding-top: 20px;
+  }
+}
+
 @media screen and (min-width: 768px) {
   .Character {
     gap: 25px;

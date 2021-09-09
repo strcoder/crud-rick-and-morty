@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { TiTimes } from 'react-icons/ti';
 import { useForm } from 'react-hook-form';
 import { CgTrashEmpty } from 'react-icons/cg';
@@ -8,17 +8,20 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import { IoReturnUpBack } from 'react-icons/io5';
 import { useParams, useLocation } from 'react-router-dom';
 import TextField from '../../components/form/TextField';
-import { getCharacter, updateCharacter, updateCharacters } from '../../redux/actions';
+import { getCharacter, updateCharacter, updateCharacters, deletedCharacter } from '../../redux/actions';
 import './styles.scss';
+import Modal from '../../components/Modal';
 
 
-const Character = ({ characters, character, getCharacter, updateCharacter, updateCharacters }) => {
+const Character = ({ characters, character, getCharacter, updateCharacter, updateCharacters, deletedCharacter }) => {
+  const history = useHistory();
   const { pathname } = useLocation();
   const [saved, setSaved] = useState(false);
   const isEdit = pathname.includes('/edit');
   const params = useParams<{ id: string }>();
   const { register, handleSubmit } = useForm();
   const [person, setPerson] = useState(character);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     if (characters) {
@@ -70,6 +73,17 @@ const Character = ({ characters, character, getCharacter, updateCharacter, updat
     }, 2000);
   }
 
+  const handleDelete = () => {
+    if (characters) {
+      const newList = characters.filter((item) => item.id !== character.id);
+      updateCharacters({ characters: newList });
+      history.push('/');
+    } else {
+      deletedCharacter({ character });
+      history.push('/');
+    }
+  }
+
   return (
     <section className='Character'>
       <Link to='/' className='Character__return btn-link-accent'>
@@ -88,8 +102,8 @@ const Character = ({ characters, character, getCharacter, updateCharacter, updat
                 <button
                   type='button'
                   title='Eliminar'
-                  onClick={() => {}}
                   className='btn-link-danger'
+                  onClick={() => setOpenModal(true)}
                 >
                   <CgTrashEmpty />
                 </button>
@@ -193,6 +207,32 @@ const Character = ({ characters, character, getCharacter, updateCharacter, updat
       {!person && (
         <p>Loading...</p>
       )}
+      <Modal
+        show={openModal}
+        onClose={setOpenModal}
+        title='Eliminar personaje'
+      >
+        <div className='DeleteModal gap-8'>
+          <p>¿Seguro que deseas eliminar el siguiente personaje?</p>
+          <p><strong>{`${character?.id} - ${character?.name}`}</strong></p>
+          <div className='flex justify-self-end'>
+            <button
+              type='button'
+              className='btn-link-danger'
+              onClick={() => setOpenModal(false)}
+            >
+              Cancelar
+            </button>
+            <button
+              type='button'
+              className='btn-danger'
+              onClick={handleDelete}
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </Modal>
     </section>
   );
 }
@@ -208,6 +248,7 @@ const mapDispatchToProps = {
   getCharacter,
   updateCharacter,
   updateCharacters,
+  deletedCharacter,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Character);

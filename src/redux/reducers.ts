@@ -10,6 +10,11 @@ const reducer = (state, payload) => {
         ...state,
         character: payload.character,
       };
+    case 'SET_DELETED_CHARACTER':
+      return {
+        ...state,
+        deleted: payload.character,
+      };
     case 'SET_NEXT_PAGE':
       return {
         ...state,
