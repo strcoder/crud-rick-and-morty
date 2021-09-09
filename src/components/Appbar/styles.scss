@@ -5,6 +5,7 @@
   display: flex;
   align-items: center;
   background-color: $white;
+  justify-content: space-between;
   border: $border-width solid $border-color;
   & > a:first-child {
     padding: 0;

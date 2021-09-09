@@ -11,8 +11,7 @@ const App = () => {
       <Layout>
         <Switch>
           <Route exact path={['/', '/home']} component={Home} />
-          <Route exact path='/character/:id' component={Character} />
-          <Route exact path='/character/edit/:id' component={Character} />
+          <Route exact path={['/character/:id', '/character/create', '/character/edit/:id']} component={Character} />
           <Route component={NotFound} />
         </Switch>
       </Layout>

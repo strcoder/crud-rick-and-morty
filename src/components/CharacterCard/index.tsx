@@ -10,7 +10,7 @@ const CharacterCard = ({ data }) => {
   return (
     <Link to={`/character/${id}`} className='CharacterCard'>
       <figure className='CharacterCard__avatar'>
-        <img src={image} alt={name} />
+        <img src={image || 'https://dues.com.mx/duesAdmin/assets/web-page/logos/defaultSF.png'} alt={name} />
       </figure>
       <div className='CharacterCard__body'>
         <p><strong>{name}</strong></p>

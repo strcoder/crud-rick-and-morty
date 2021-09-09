@@ -1,30 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import { TiTimes } from 'react-icons/ti';
-import { useForm } from 'react-hook-form';
 import { CgTrashEmpty } from 'react-icons/cg';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { IoReturnUpBack } from 'react-icons/io5';
 import { useParams, useLocation } from 'react-router-dom';
-import TextField from '../../components/form/TextField';
-import { getCharacter, updateCharacter, updateCharacters, deletedCharacter } from '../../redux/actions';
-import './styles.scss';
+import {
+  getCharacter,
+  updateCharacter,
+  updateCharacters,
+  deletedCharacter,
+  createdCharacter,
+} from '../../redux/actions';
 import Modal from '../../components/Modal';
+import './styles.scss';
+import CharacterForm from '../../components/CharacterForm';
 
-
-const Character = ({ characters, character, getCharacter, updateCharacter, updateCharacters, deletedCharacter }) => {
+const Character = ({
+  characters,
+  character,
+  getCharacter,
+  updateCharacter,
+  createdCharacter,
+  updateCharacters,
+  deletedCharacter,
+}) => {
   const history = useHistory();
   const { pathname } = useLocation();
-  const [saved, setSaved] = useState(false);
   const isEdit = pathname.includes('/edit');
+  const isCreate = pathname.includes('/create');
   const params = useParams<{ id: string }>();
-  const { register, handleSubmit } = useForm();
-  const [person, setPerson] = useState(character);
+  const [person, setPerson] = useState(isCreate ? null : character);
   const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
-    if (characters) {
+    if (characters && !isCreate) {
       const aux = characters?.find((item) => item.id.toString() === params.id);
       if (aux) {
         setPerson(aux);
@@ -32,7 +42,7 @@ const Character = ({ characters, character, getCharacter, updateCharacter, updat
       } else {
         getCharacter({ id: params.id });
       }
-    } else {
+    } else if (!isCreate) {
       getCharacter({ id: params.id });
     }
   }, []);
@@ -40,38 +50,6 @@ const Character = ({ characters, character, getCharacter, updateCharacter, updat
   useEffect(() => {
     setPerson(character);
   }, [character]);
-
-  const onSubmit = (data) => {
-    const origin = {
-      name: data.origin,
-      url: character.origin.url,
-    }
-    const location = {
-      name: data.location,
-      url: character.location.url,
-    }
-    const newCharacter = {
-      ...character,
-      ...data,
-      origin,
-      location,
-    };
-    if (characters) {
-      const newCharacters = characters?.map((item) => {
-        if (item.id === newCharacter.id) {
-          return newCharacter;
-        }
-        return item;
-      })
-      updateCharacters({ characters: newCharacters });
-    }
-
-    updateCharacter({ character: newCharacter });
-    setSaved(true);
-    setTimeout(() => {
-      setSaved(false);
-    }, 2000);
-  }
 
   const handleDelete = () => {
     if (characters) {
@@ -82,22 +60,29 @@ const Character = ({ characters, character, getCharacter, updateCharacter, updat
       deletedCharacter({ character });
       history.push('/');
     }
-  }
+  };
 
   return (
     <section className='Character'>
       <Link to='/' className='Character__return btn-link-accent'>
-        <span className='btn-icon'><IoReturnUpBack /></span>
+        <span className='btn-icon'>
+          <IoReturnUpBack />
+        </span>
         <span>Regresar</span>
       </Link>
-      {person && !isEdit && (
+      {person && !isEdit && !isCreate && (
         <>
           <figure className='Character__image'>
-            <img src={person.image} alt={person.name} />
+            <img
+              alt={person.name}
+              src={person.image || 'https://dues.com.mx/duesAdmin/assets/web-page/logos/defaultSF.png'}
+            />
           </figure>
           <div className='Character__body'>
             <div className='flex'>
-              <p><strong>{person.name}</strong></p>
+              <p>
+                <strong>{person.name}</strong>
+              </p>
               <div className='flex'>
                 <button
                   type='button'
@@ -120,101 +105,55 @@ const Character = ({ characters, character, getCharacter, updateCharacter, updat
               {`${person.status} - ${person.species}`}
             </p>
             <p>{person.type}</p>
-            <p>{person.gender}</p>
-            <p>{person.origin.name}</p>
-            <p>{person.location.name}</p>
+            <p>{`Genero: ${person.gender}`}</p>
+            <p>{`Origen: ${person.origin.name}`}</p>
+            <p>{`Localización: ${person.location.name}`}</p>
           </div>
         </>
       )}
       {person && isEdit && (
         <>
           <figure className='Character__image'>
-            <img src={person.image} alt={person.name} />
+            <img
+              alt={person.name}
+              src={person.image || 'https://dues.com.mx/duesAdmin/assets/web-page/logos/defaultSF.png'}
+            />
           </figure>
-          <form className='Character__body' onSubmit={handleSubmit(onSubmit)}>
-            <div className='flex'>
-              <TextField
-                id='Name'
-                name='name'
-                label='Nombre'
-                autoComplete='off'
-                defaultValue={person.name}
-                placeholder='Digita el nombre'
-                register={register('name', { required: true })}
-              />
-              <div className='flex'>
-                <Link
-                  title='Cancelar'
-                  className='btn-outline-danger'
-                  to={`/character/${person.id}`}
-                >
-                  <TiTimes />
-                </Link>
-              </div>
-            </div>
-            <TextField
-              id='Status'
-              name='status'
-              label='Status'
-              autoComplete='off'
-              defaultValue={person.status}
-              placeholder='Digita el status del personaje'
-              register={register('status', { required: true })}
-            />
-            <TextField
-              id='Species'
-              name='species'
-              label='Especie'
-              autoComplete='off'
-              defaultValue={person.species}
-              placeholder='Digita la especie del personaje'
-              register={register('species', { required: true })}
-            />
-            <TextField
-              id='Gender'
-              name='gender'
-              label='Genero'
-              autoComplete='off'
-              defaultValue={person.gender}
-              placeholder='Digita el genero del personaje'
-              register={register('gender', { required: true })}
-            />
-            <TextField
-              id='Origin'
-              name='origin'
-              label='Origen'
-              autoComplete='off'
-              defaultValue={person.origin.name}
-              placeholder='Digita el origen del personaje'
-              register={register('origin', { required: true })}
-            />
-            <TextField
-              id='Location'
-              name='location'
-              autoComplete='off'
-              label='Localización'
-              defaultValue={person.location.name}
-              placeholder='Digita la localización del personaje'
-              register={register('location', { required: true })}
-            />
-            {saved && <p className='color-success bounceIn'>¡Guardado correctamente!</p>}
-            <button type='submit' className='btn-primary form-button'>
-              Guardar
-            </button>
-          </form>
+          <CharacterForm
+            person={person}
+            character={character}
+            characters={characters}
+            createdCharacter={null}
+            updateCharacter={updateCharacter}
+            updateCharacters={updateCharacters}
+          />
         </>
       )}
-      {!person && (
-        <p>Loading...</p>
+      {isCreate && (
+        <>
+          <figure className='Character__image'>
+            <img
+              src='https://dues.com.mx/duesAdmin/assets/web-page/logos/defaultSF.png'
+              alt='No image'
+            />
+          </figure>
+          <CharacterForm
+            person={null}
+            character={null}
+            characters={characters}
+            updateCharacter={updateCharacter}
+            createdCharacter={createdCharacter}
+            updateCharacters={updateCharacters}
+          />
+        </>
       )}
-      <Modal
-        show={openModal}
-        onClose={setOpenModal}
-        title='Eliminar personaje'
-      >
+      {!person && !isCreate && <p>Loading...</p>}
+      <Modal show={openModal} onClose={setOpenModal} title='Eliminar personaje'>
         <div className='DeleteModal gap-8'>
           <p>¿Seguro que deseas eliminar el siguiente personaje?</p>
-          <p><strong>{`${character?.id} - ${character?.name}`}</strong></p>
+          <p>
+            <strong>{`${character?.id} - ${character?.name}`}</strong>
+          </p>
           <div className='flex justify-self-end'>
             <button
               type='button'
@@ -223,11 +162,7 @@ const Character = ({ characters, character, getCharacter, updateCharacter, updat
             >
               Cancelar
             </button>
-            <button
-              type='button'
-              className='btn-danger'
-              onClick={handleDelete}
-            >
+            <button type='button' className='btn-danger' onClick={handleDelete}>
               Eliminar
             </button>
           </div>
@@ -235,7 +170,7 @@ const Character = ({ characters, character, getCharacter, updateCharacter, updat
       </Modal>
     </section>
   );
-}
+};
 
 const mapStateToProps = (state) => {
   return {
@@ -247,6 +182,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   getCharacter,
   updateCharacter,
+  createdCharacter,
   updateCharacters,
   deletedCharacter,
 };
