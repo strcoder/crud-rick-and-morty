@@ -6,10 +6,10 @@ import { useForm } from 'react-hook-form';
 import { CgTrashEmpty } from 'react-icons/cg';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { IoReturnUpBack } from 'react-icons/io5';
-import { getCharacter, updateCharacter } from '../../redux/actions';
 import { useParams, useLocation } from 'react-router-dom';
-import './styles.scss';
 import TextField from '../../components/form/TextField';
+import { getCharacter, updateCharacter } from '../../redux/actions';
+import './styles.scss';
 
 
 const Character = ({ character, getCharacter, updateCharacter }) => {
@@ -37,7 +37,7 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
         <span className='btn-icon'><IoReturnUpBack /></span>
         <span>Regresar</span>
       </Link>
-      {Object.keys(character).length > 0 && !isEdit && (
+      {character && !isEdit && (
         <>
           <figure className='Character__image'>
             <img src={character.image} alt={character.name} />
@@ -73,7 +73,7 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
           </div>
         </>
       )}
-      {Object.keys(character).length > 0 && isEdit && (
+      {character && isEdit && (
         <>
           <figure className='Character__image'>
             <img src={character.image} alt={character.name} />
@@ -150,7 +150,7 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
           </form>
         </>
       )}
-      {Object.keys(character).length === 0 && (
+      {!character && (
         <p>Loading...</p>
       )}
     </section>
@@ -159,7 +159,8 @@ const Character = ({ character, getCharacter, updateCharacter }) => {
 
 const mapStateToProps = (state) => {
   return {
-    character: state.character || {},
+    character: state.character,
+    characters: state.characters,
   };
 };
 

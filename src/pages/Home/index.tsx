@@ -5,15 +5,29 @@ import CharacterCard from '../../components/CharacterCard';
 import { getCharacters, getNextPage } from '../../redux/actions';
 import './styles.scss';
 
-const Home = ({ characters, nextPage, getCharacters, getNextPage }) => {
+const Home = ({ characters, character, nextPage, getCharacters, getNextPage }) => {
   const [list, setList] = useState(characters);
 
   useEffect(() => {
-    getCharacters();
+    if (!characters || characters.length === 0) {
+      getCharacters();
+    }
   }, []);
 
   useEffect(() => {
     setList(characters);
+  }, [characters]);
+
+  useEffect(() => {
+    if (characters && character) {
+      const aux = characters.map((item) => {
+        if (character.id === item.id) {
+          return character;
+        }
+        return item;
+      });
+      setList(aux);
+    }
   }, [characters]);
 
   return (
@@ -40,8 +54,9 @@ const Home = ({ characters, nextPage, getCharacters, getNextPage }) => {
 
 const mapStateToProps = (state) => {
   return {
-    nextPage: state.nextPage || '',
-    characters: state.characters || [],
+    nextPage: state.nextPage,
+    character: state.character,
+    characters: state.characters,
   };
 };
 
