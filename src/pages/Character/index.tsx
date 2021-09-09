@@ -75,7 +75,7 @@ const Character = ({
           <figure className='Character__image'>
             <img
               alt={person.name}
-              src={person.image || 'https://dues.com.mx/duesAdmin/assets/web-page/logos/defaultSF.png'}
+              src={person.image || 'https://rickandmortyapi.com/api/character/avatar/19.jpeg'}
             />
           </figure>
           <div className='Character__body'>
@@ -116,7 +116,7 @@ const Character = ({
           <figure className='Character__image'>
             <img
               alt={person.name}
-              src={person.image || 'https://dues.com.mx/duesAdmin/assets/web-page/logos/defaultSF.png'}
+              src={person.image || 'https://rickandmortyapi.com/api/character/avatar/19.jpeg'}
             />
           </figure>
           <CharacterForm
@@ -133,7 +133,7 @@ const Character = ({
         <>
           <figure className='Character__image'>
             <img
-              src='https://dues.com.mx/duesAdmin/assets/web-page/logos/defaultSF.png'
+              src='https://rickandmortyapi.com/api/character/avatar/19.jpeg'
               alt='No image'
             />
           </figure>
